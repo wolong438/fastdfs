@@ -16,11 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static org.springframework.util.StringUtils.getFilename;
 
 @Controller
 public class FileController {
@@ -121,5 +126,4 @@ public class FileController {
     out.write(bytes);
     out.close();
   }
-
 }
