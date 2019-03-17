@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>FastDFS 测试</title>
+    <style>
+        div { margin-bottom: 10px; }
+        input[name="file"] { width: 251px; }
+        input[name="path"] { width: 570px; }
+        input[name="uri"] { width: 314px;}
+        img { width: 670px; }
+    </style>
+    <script>
+        function loadFile() {
+            var path = getElementByName('path').value;
+            getElementByName("img").src = '/file?path=' + path;
+        }
+        function downloadFile() {
+            var path = getElementByName('path').value;
+            window.location = '/download?path=' + path;
+        }
+        function copyPath() {
+            getElementByName("uri").select();
+            document.execCommand("Copy");
+            console.log("复制成功");
+        }
+        function uploadFile() {
+            var formData = new FormData();
+            formData.append("file", getElementByName("file").files[0]);
+
+            var xhr = null;
+            if (window.XMLHttpRequest) {
+                xhr = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            if (xhr == null) {
+                alert("Your browser does not support XMLHTTP.");
+                return;
+            }
+            xhr.open("post","/upload");
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                getElementByName("uri").value = "/" + response["fullPath"];
+            }
+            xhr.send(formData);
+        }
+        function getElementByName(name) {
+            return document.getElementsByName(name)[0];
+        }
+    </script>
+</head>
+<body>
+<h2>FastDFS 测试</h2>
+<div>
+    <input name="file" type="file">
+    <input name="uri" type="text" readonly></input>
+    <button onclick="uploadFile()">上传</button>
+    <button onclick="copyPath()">复制</button>
+</div>
+<div>
+    <input name="path" type="text" value="/group1/M00/00/00/rBsABlyMZEqAF5btAAGNrKah6MA031.jpg">
+    <button onclick="loadFile()">查看</button>
+    <button onclick="downloadFile()">下载</button>
+</div>
+
+<!-- 此处以图片查看为例 -->
+<img name="img" src="/file?path=/group1/M00/00/00/rBsABlyMZEqAF5btAAGNrKah6MA031.jpg"></img>
+</body>
+</html>
